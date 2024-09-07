@@ -147,7 +147,7 @@ Tex3DS::Image Invocation::load_image (const Tex3DS::Image &img)
 		Tex3DS::Image new_img = Tex3DS::Image(output_width, output_height);
 
 		for(size_t r = 0; r < image_height; r++)
-			memcpy(&new_img.pixels[new_img.stride * r], &img.pixels[img.stride * r], img.stride * r * sizeof(Tex3DS::RGBA));
+			memcpy(&new_img.pixels[new_img.stride * r], &img.pixels[img.stride * r], img.stride * sizeof(Tex3DS::RGBA));
 
 		return new_img;
 	}
@@ -245,8 +245,8 @@ void Invocation::process_image (Tex3DS::Image &img)
 		{
 			// create the work unit
 			encode::WorkUnit work (num_work++,
-			    img.pixels.data() + (j * width + i),
-			    width,
+			    img.pixels.data() + (j * img.stride + i),
+			    img.stride,
 			    params.etc1_quality,
 			    !params.output_path.empty (),
 			    false,
