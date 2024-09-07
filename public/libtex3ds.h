@@ -52,7 +52,7 @@ static constexpr uint8_t QuantumRange = 255;
 
 struct RGBA
 {
-    Quantum r, g, b, a;
+    Quantum b, g, r, a;
 };
 
 using PixelPacket = RGBA*;
