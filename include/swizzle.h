@@ -22,10 +22,15 @@
  */
 #pragma once
 
-#include <Magick++.h>
+#include "libtex3ds.h"
+
+namespace Tex3DS
+{
 
 /** @brief Swizzle an image (Morton order)
  *  @param[in] img     Image to swizzle
  *  @param[in] reverse Whether to unswizzle
  */
-void swizzle (Magick::Image &img, bool reverse);
+void swizzle (Tex3DS::Image &img, bool reverse);
+
+} // namespace Tex3DS

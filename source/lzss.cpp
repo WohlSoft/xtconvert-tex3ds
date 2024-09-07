@@ -38,6 +38,9 @@
 /** @brief LZ11 maximum displacement */
 #define LZ11_MAX_DISP 4096
 
+namespace Tex3DS
+{
+
 namespace
 {
 /** @brief LZ compression mode */
@@ -433,3 +436,5 @@ void lz11Decode (const void *source, void *dest, size_t size)
 		}
 	}
 }
+
+} // namespace Tex3DS

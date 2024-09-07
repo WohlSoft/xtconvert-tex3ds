@@ -25,6 +25,9 @@
 #include "quantum.h"
 #include "rg_etc1.h"
 
+namespace Tex3DS
+{
+
 namespace
 {
 /** @brief ETC1/ETC1A4 encoder
@@ -52,7 +55,7 @@ void etc1_common (encode::WorkUnit &work, bool alpha)
 				{
 					for (size_t x = 0; x < 4; ++x)
 					{
-						Magick::Color c = work.p[(j + y) * work.stride + i + x];
+						Tex3DS::RGBA c = work.p[(j + y) * work.stride + i + x];
 
 						in_block[y * 16 + x * 4 + 0] = quantum_to_bits<8> (quantumRed (c));
 						in_block[y * 16 + x * 4 + 1] = quantum_to_bits<8> (quantumGreen (c));
@@ -99,7 +102,7 @@ void etc1_common (encode::WorkUnit &work, bool alpha)
 				{
 					for (size_t x = 0; x < 4; ++x)
 					{
-						Magick::Color c = work.p[(j + y) * work.stride + i + x];
+						Tex3DS::RGBA c = work.p[(j + y) * work.stride + i + x];
 
 						quantumRed (c, bits_to_quantum<8> (in_block[y * 16 + x * 4 + 0]));
 						quantumGreen (c, bits_to_quantum<8> (in_block[y * 16 + x * 4 + 1]));
@@ -109,8 +112,7 @@ void etc1_common (encode::WorkUnit &work, bool alpha)
 							quantumAlpha (c, quantize<4> (quantumAlpha (c)));
 						else
 						{
-							using Magick::Quantum;
-							quantumAlpha (c, QuantumRange);
+							quantumAlpha (c, Tex3DS::QuantumRange);
 						}
 
 						work.p[(j + y) * work.stride + i + x] = c;
@@ -130,7 +132,7 @@ void rgba8888 (WorkUnit &work)
 	{
 		for (size_t i = 0; i < 8; ++i)
 		{
-			Magick::Color c = work.p[j * work.stride + i];
+			Tex3DS::RGBA c = work.p[j * work.stride + i];
 
 			if (work.output)
 			{
@@ -159,7 +161,7 @@ void rgb888 (WorkUnit &work)
 	{
 		for (size_t i = 0; i < 8; ++i)
 		{
-			Magick::Color c = work.p[j * work.stride + i];
+			Tex3DS::RGBA c = work.p[j * work.stride + i];
 
 			if (work.output)
 			{
@@ -170,12 +172,10 @@ void rgb888 (WorkUnit &work)
 
 			if (work.preview)
 			{
-				using Magick::Quantum;
-
 				quantumRed (c, quantize<8> (quantumRed (c)));
 				quantumGreen (c, quantize<8> (quantumGreen (c)));
 				quantumBlue (c, quantize<8> (quantumBlue (c)));
-				quantumAlpha (c, QuantumRange);
+				quantumAlpha (c, Tex3DS::QuantumRange);
 
 				work.p[j * work.stride + i] = c;
 			}
@@ -189,7 +189,7 @@ void rgba5551 (WorkUnit &work)
 	{
 		for (size_t i = 0; i < 8; ++i)
 		{
-			Magick::Color c = work.p[j * work.stride + i];
+			Tex3DS::RGBA c = work.p[j * work.stride + i];
 
 			if (work.output)
 			{
@@ -221,7 +221,7 @@ void rgb565 (WorkUnit &work)
 	{
 		for (size_t i = 0; i < 8; ++i)
 		{
-			Magick::Color c = work.p[j * work.stride + i];
+			Tex3DS::RGBA c = work.p[j * work.stride + i];
 
 			if (work.output)
 			{
@@ -235,12 +235,10 @@ void rgb565 (WorkUnit &work)
 
 			if (work.preview)
 			{
-				using Magick::Quantum;
-
 				quantumRed (c, quantize<5> (quantumRed (c)));
 				quantumGreen (c, quantize<6> (quantumGreen (c)));
 				quantumBlue (c, quantize<5> (quantumBlue (c)));
-				quantumAlpha (c, QuantumRange);
+				quantumAlpha (c, Tex3DS::QuantumRange);
 
 				work.p[j * work.stride + i] = c;
 			}
@@ -254,7 +252,7 @@ void rgba4444 (WorkUnit &work)
 	{
 		for (size_t i = 0; i < 8; ++i)
 		{
-			Magick::Color c = work.p[j * work.stride + i];
+			Tex3DS::RGBA c = work.p[j * work.stride + i];
 
 			if (work.output)
 			{
@@ -286,7 +284,7 @@ void la88 (WorkUnit &work)
 	{
 		for (size_t i = 0; i < 8; ++i)
 		{
-			Magick::Color c = work.p[j * work.stride + i];
+			Tex3DS::RGBA c = work.p[j * work.stride + i];
 
 			if (work.output)
 			{
@@ -296,7 +294,7 @@ void la88 (WorkUnit &work)
 
 			if (work.preview)
 			{
-				Magick::Quantum l = quantize<8> (luminance (c));
+				Tex3DS::Quantum l = quantize<8> (luminance (c));
 
 				quantumRed (c, l);
 				quantumGreen (c, l);
@@ -315,7 +313,7 @@ void hilo88 (WorkUnit &work)
 	{
 		for (size_t i = 0; i < 8; ++i)
 		{
-			Magick::Color c = work.p[j * work.stride + i];
+			Tex3DS::RGBA c = work.p[j * work.stride + i];
 
 			if (work.output)
 			{
@@ -325,12 +323,10 @@ void hilo88 (WorkUnit &work)
 
 			if (work.preview)
 			{
-				using Magick::Quantum;
-
 				quantumRed (c, quantize<8> (quantumRed (c)));
 				quantumGreen (c, quantize<8> (quantumGreen (c)));
 				quantumBlue (c, 0);
-				quantumAlpha (c, QuantumRange);
+				quantumAlpha (c, Tex3DS::QuantumRange);
 
 				work.p[j * work.stride + i] = c;
 			}
@@ -344,21 +340,19 @@ void l8 (WorkUnit &work)
 	{
 		for (size_t i = 0; i < 8; ++i)
 		{
-			Magick::Color c = work.p[j * work.stride + i];
+			Tex3DS::RGBA c = work.p[j * work.stride + i];
 
 			if (work.output)
 				work.result.push_back (quantum_to_bits<8> (luminance (c)));
 
 			if (work.preview)
 			{
-				Magick::Quantum l = quantize<8> (luminance (c));
-
-				using Magick::Quantum;
+				Tex3DS::Quantum l = quantize<8> (luminance (c));
 
 				quantumRed (c, l);
 				quantumGreen (c, l);
 				quantumBlue (c, l);
-				quantumAlpha (c, QuantumRange);
+				quantumAlpha (c, Tex3DS::QuantumRange);
 
 				work.p[j * work.stride + i] = c;
 			}
@@ -372,7 +366,7 @@ void a8 (WorkUnit &work)
 	{
 		for (size_t i = 0; i < 8; ++i)
 		{
-			Magick::Color c = work.p[j * work.stride + i];
+			Tex3DS::RGBA c = work.p[j * work.stride + i];
 
 			if (work.output)
 				work.result.push_back (quantum_to_bits<8> (quantumAlpha (c)));
@@ -396,7 +390,7 @@ void la44 (WorkUnit &work)
 	{
 		for (size_t i = 0; i < 8; ++i)
 		{
-			Magick::Color c = work.p[j * work.stride + i];
+			Tex3DS::RGBA c = work.p[j * work.stride + i];
 
 			if (work.output)
 			{
@@ -406,7 +400,7 @@ void la44 (WorkUnit &work)
 
 			if (work.preview)
 			{
-				Magick::Quantum l = quantize<4> (luminance (c));
+				Tex3DS::Quantum l = quantize<4> (luminance (c));
 
 				quantumRed (c, l);
 				quantumGreen (c, l);
@@ -425,7 +419,7 @@ void l4 (WorkUnit &work)
 	{
 		for (size_t i = 0; i < 8; i += 2)
 		{
-			Magick::Color c1 = work.p[j * work.stride + i + 0],
+			Tex3DS::RGBA c1 = work.p[j * work.stride + i + 0],
 			              c2 = work.p[j * work.stride + i + 1];
 
 			if (work.output)
@@ -436,21 +430,19 @@ void l4 (WorkUnit &work)
 
 			if (work.preview)
 			{
-				Magick::Quantum l = quantize<4> (luminance (c1));
-
-				using Magick::Quantum;
+				Tex3DS::Quantum l = quantize<4> (luminance (c1));
 
 				quantumRed (c1, l);
 				quantumGreen (c1, l);
 				quantumBlue (c1, l);
-				quantumAlpha (c1, QuantumRange);
+				quantumAlpha (c1, Tex3DS::QuantumRange);
 
 				l = quantize<4> (luminance (c2));
 
 				quantumRed (c2, l);
 				quantumGreen (c2, l);
 				quantumBlue (c2, l);
-				quantumAlpha (c2, QuantumRange);
+				quantumAlpha (c2, Tex3DS::QuantumRange);
 
 				work.p[j * work.stride + i + 0] = c1;
 				work.p[j * work.stride + i + 1] = c2;
@@ -465,7 +457,7 @@ void a4 (WorkUnit &work)
 	{
 		for (size_t i = 0; i < 8; i += 2)
 		{
-			Magick::Color c1 = work.p[j * work.stride + i + 0],
+			Tex3DS::RGBA c1 = work.p[j * work.stride + i + 0],
 			              c2 = work.p[j * work.stride + i + 1];
 
 			if (work.output)
@@ -503,3 +495,5 @@ void etc1a4 (WorkUnit &work)
 	etc1_common (work, true);
 }
 }
+
+} // namespace Tex3DS

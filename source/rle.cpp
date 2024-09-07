@@ -37,6 +37,9 @@
 /** @brief Maximum copy length */
 #define RLE_MAX_COPY 128
 
+namespace Tex3DS
+{
+
 std::vector<uint8_t> rleEncode (const void *source, size_t len)
 {
 	// create output buffer
@@ -158,3 +161,5 @@ void rleDecode (const void *source, void *dest, size_t size)
 		}
 	}
 }
+
+} // namespace Tex3DS

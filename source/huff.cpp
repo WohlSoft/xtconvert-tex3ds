@@ -30,6 +30,9 @@
 #include <deque>
 #include <memory>
 
+namespace Tex3DS
+{
+
 namespace
 {
 /** @brief Huffman node */
@@ -625,3 +628,5 @@ void huffDecode (const void *src, void *dst, size_t size)
 		mask >>= 1;
 	}
 }
+
+} // namespace Tex3DS

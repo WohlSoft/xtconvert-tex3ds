@@ -3,6 +3,8 @@
 // Please see ZLIB license at the end of this file.
 #pragma once
 
+#include "libtex3ds.h"
+
 namespace rg_etc1
 {
    // Unpacks an 8-byte ETC1 compressed block to a block of 4x4 32bpp RGBA pixels.
@@ -10,15 +12,6 @@ namespace rg_etc1
    // This function is thread safe, and does not dynamically allocate any memory.
    // If preserve_alpha is true, the alpha channel of the destination pixels will not be overwritten. Otherwise, alpha will be set to 255.
    bool unpack_etc1_block(const void *pETC1_block, unsigned int* pDst_pixels_rgba, bool preserve_alpha = false);
-
-   // Quality setting = the higher the quality, the slower.
-   // To pack large textures, it is highly recommended to call pack_etc1_block() in parallel, on different blocks, from multiple threads (particularly when using cHighQuality).
-   enum etc1_quality
-   {
-      cLowQuality,
-      cMediumQuality,
-      cHighQuality,
-   };
 
    struct etc1_pack_params
    {

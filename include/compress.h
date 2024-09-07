@@ -27,6 +27,9 @@
 #include <cstdint>
 #include <vector>
 
+namespace Tex3DS
+{
+
 /** @brief LZSS/LZ10 compression
  *  @param[in] src Source buffer
  *  @param[in] len Source length
@@ -114,3 +117,5 @@ inline void compressionHeader (std::vector<uint8_t> &buffer, uint8_t type, size_
 	}
 }
 }
+
+} // namespace Tex3DS

@@ -18,48 +18,90 @@
  * along with tex3ds.  If not, see <http://www.gnu.org/licenses/>.
  *----------------------------------------------------------------------------*/
 /** @file quantum.h
- *  @brief Magick::Quantum conversions
+ *  @brief Tex3DS::Quantum conversions
  */
 #pragma once
 
-#include "magick_compat.h"
+#include "libtex3ds.h"
 
 #include <algorithm>
 #include <cmath>
 
+namespace Tex3DS
+{
+
 namespace
 {
-/** @brief Convert Magick::Quantum to an n-bit value
+
+inline Tex3DS::Quantum quantumRed(const Tex3DS::RGBA& c)
+{
+	return c.r;
+}
+
+inline Tex3DS::Quantum quantumGreen(const Tex3DS::RGBA& c)
+{
+	return c.g;
+}
+
+inline Tex3DS::Quantum quantumBlue(const Tex3DS::RGBA& c)
+{
+	return c.b;
+}
+
+inline Tex3DS::Quantum quantumAlpha(const Tex3DS::RGBA& c)
+{
+	return c.a;
+}
+
+inline void quantumRed(Tex3DS::RGBA& c, Tex3DS::Quantum q)
+{
+	c.r = q;
+}
+
+inline void quantumGreen(Tex3DS::RGBA& c, Tex3DS::Quantum q)
+{
+	c.g = q;
+}
+
+inline void quantumBlue(Tex3DS::RGBA& c, Tex3DS::Quantum q)
+{
+	c.b = q;
+}
+
+inline void quantumAlpha(Tex3DS::RGBA& c, Tex3DS::Quantum q)
+{
+	c.a = q;
+}
+
+/** @brief Convert Tex3DS::Quantum to an n-bit value
  *  @tparam    bits Number of bits for output value
  *  @param[in] v    Quantum to convert
  *  @returns n-bit quantum
  */
 template <int bits>
-inline uint8_t quantum_to_bits (Magick::Quantum v)
+inline uint8_t quantum_to_bits (Tex3DS::Quantum v)
 {
-	using Magick::Quantum;
-	return (1 << bits) * v / (QuantumRange + 1);
+	return (1 << bits) * v / (Tex3DS::QuantumRange + 1);
 }
 
-/** @brief Convert an n-bit value to a Magick::Quantum
+/** @brief Convert an n-bit value to a Tex3DS::Quantum
  *  @tparam    bits Number of bits for input value
  *  @param[in] v    Input n-bit value
- *  @returns Magick::Quantum
+ *  @returns Tex3DS::Quantum
  */
 template <int bits>
-inline Magick::Quantum bits_to_quantum (uint8_t v)
+inline Tex3DS::Quantum bits_to_quantum (uint8_t v)
 {
-	using Magick::Quantum;
-	return v * QuantumRange / ((1 << bits) - 1);
+	return v * Tex3DS::QuantumRange / ((1 << bits) - 1);
 }
 
-/** @brief Quantize a Magick::Quantum to its n-bit equivalent
+/** @brief Quantize a Tex3DS::Quantum to its n-bit equivalent
  *  @tparam    bits Number of significant bits
  *  @param[in] v    Quantum to quantize
- *  @returns quantized Magick::Quantum
+ *  @returns quantized Tex3DS::Quantum
  */
 template <int bits>
-inline Magick::Quantum quantize (Magick::Quantum v)
+inline Tex3DS::Quantum quantize (Tex3DS::Quantum v)
 {
 	return bits_to_quantum<bits> (quantum_to_bits<bits> (v));
 }
@@ -90,21 +132,22 @@ inline double gamma (double v)
  *  @param[in] c Color to get luminance
  *  @return luminance
  */
-inline Magick::Quantum luminance (const Magick::Color &c)
+inline Tex3DS::Quantum luminance (const Tex3DS::RGBA &c)
 {
 	// ITU Recommendation BT.709
 	const double r = 0.212655;
 	const double g = 0.715158;
 	const double b = 0.072187;
 
-	using Magick::Quantum;
-
 	// Gamma correction
-	double v = gamma (r * gamma_inverse (static_cast<double> (quantumRed (c)) / QuantumRange) +
-	                  g * gamma_inverse (static_cast<double> (quantumGreen (c)) / QuantumRange) +
-	                  b * gamma_inverse (static_cast<double> (quantumBlue (c)) / QuantumRange));
+	double v = gamma (r * gamma_inverse (static_cast<double> (quantumRed (c)) / Tex3DS::QuantumRange) +
+	                  g * gamma_inverse (static_cast<double> (quantumGreen (c)) / Tex3DS::QuantumRange) +
+	                  b * gamma_inverse (static_cast<double> (quantumBlue (c)) / Tex3DS::QuantumRange));
 
 	// clamp
-	return std::max (0.0, std::min (1.0, v)) * QuantumRange;
+	return std::max (0.0, std::min (1.0, v)) * Tex3DS::QuantumRange;
 }
+
 }
+
+} // namespace Tex3DS

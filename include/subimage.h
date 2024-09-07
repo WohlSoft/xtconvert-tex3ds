@@ -22,7 +22,7 @@
  */
 #pragma once
 
-#include "magick_compat.h"
+#include "libtex3ds.h"
 
 #include <libgen.h>
 
@@ -30,6 +30,9 @@
 #include <cstdio>
 #include <string>
 #include <vector>
+
+namespace Tex3DS
+{
 
 struct SubImage
 {
@@ -109,3 +112,5 @@ struct SubImage
 			    bottom * height);
 	}
 };
+
+} // namespace Tex3DS

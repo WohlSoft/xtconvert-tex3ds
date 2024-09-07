@@ -25,12 +25,15 @@
  */
 #pragma once
 
-#include "magick_compat.h"
+#include "libtex3ds.h"
 #include "rg_etc1.h"
 #include "subimage.h"
 
 #include <limits>
 #include <vector>
+
+namespace Tex3DS
+{
 
 /** @namespace encode
  *  @brief Image encoding namespace
@@ -342,3 +345,5 @@ void etc1 (WorkUnit &work);
  */
 void etc1a4 (WorkUnit &work);
 }
+
+} // namespace Tex3DS

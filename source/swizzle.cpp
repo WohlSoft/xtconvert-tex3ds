@@ -21,8 +21,13 @@
  *  @brief Swizzle routines
  */
 
+#include <utility>
+
 #include "swizzle.h"
-#include "magick_compat.h"
+#include "libtex3ds.h"
+
+namespace Tex3DS
+{
 
 namespace
 {
@@ -30,7 +35,7 @@ namespace
  *  @param[in] p       Tile to swizzle
  *  @param[in] reverse Whether to unswizzle
  */
-void swizzle (PixelPacket p, bool reverse)
+void swizzle (Tex3DS::RGBA** p, bool reverse)
 {
 	// swizzle foursome table
 	static const unsigned char table[][4] = {
@@ -55,11 +60,11 @@ void swizzle (PixelPacket p, bool reverse)
 		// swizzle each foursome
 		for (const auto &entry : table)
 		{
-			Magick::Color tmp = p[entry[0]];
-			p[entry[0]]       = p[entry[1]];
-			p[entry[1]]       = p[entry[2]];
-			p[entry[2]]       = p[entry[3]];
-			p[entry[3]]       = tmp;
+			Tex3DS::RGBA tmp = *p[entry[0]];
+			*p[entry[0]]       = *p[entry[1]];
+			*p[entry[1]]       = *p[entry[2]];
+			*p[entry[2]]       = *p[entry[3]];
+			*p[entry[3]]       = tmp;
 		}
 	}
 	else
@@ -67,19 +72,19 @@ void swizzle (PixelPacket p, bool reverse)
 		// unswizzle each foursome
 		for (const auto &entry : table)
 		{
-			Magick::Color tmp = p[entry[3]];
-			p[entry[3]]       = p[entry[2]];
-			p[entry[2]]       = p[entry[1]];
-			p[entry[1]]       = p[entry[0]];
-			p[entry[0]]       = tmp;
+			Tex3DS::RGBA tmp = *p[entry[3]];
+			*p[entry[3]]       = *p[entry[2]];
+			*p[entry[2]]       = *p[entry[1]];
+			*p[entry[1]]       = *p[entry[0]];
+			*p[entry[0]]       = tmp;
 		}
 	}
 
 	// (un)swizzle each pair
-	swapPixel (p[12], p[18]);
-	swapPixel (p[13], p[19]);
-	swapPixel (p[44], p[50]);
-	swapPixel (p[45], p[51]);
+	std::swap (*p[12], *p[18]);
+	std::swap (*p[13], *p[19]);
+	std::swap (*p[44], *p[50]);
+	std::swap (*p[45], *p[51]);
 }
 }
 
@@ -87,20 +92,34 @@ void swizzle (PixelPacket p, bool reverse)
  *  @param[in] img     Image to swizzle
  *  @param[in] reverse Whether to unswizzle
  */
-void swizzle (Magick::Image &img, bool reverse)
+void swizzle (Tex3DS::Image &img, bool reverse)
 {
-	Pixels cache (img);
-	size_t height = img.rows ();
-	size_t width  = img.columns ();
+	Tex3DS::RGBA* refs[8 * 8];
+	size_t height = img.h;
+	size_t width  = img.w;
 
 	// (un)swizzle each tile
 	for (size_t j = 0; j < height; j += 8)
 	{
 		for (size_t i = 0; i < width; i += 8)
 		{
-			PixelPacket p = cache.get (i, j, 8, 8);
-			swizzle (p, reverse);
-			cache.sync ();
+			Tex3DS::RGBA undef;
+
+			// define references
+			for(size_t j1 = 0; j1 < 8; j1++)
+			{
+				for(size_t i1 = 0; i1 < 8; i1++)
+				{
+					if(j + j1 < height && i + i1 < width)
+						refs[j1 * 8 + i1] = &img.pixels[(j + j1) * img.stride + (i + i1)];
+					else
+						refs[j1 * 8 + i1] = &undef;
+				}
+			}
+
+			swizzle (refs, reverse);
 		}
 	}
 }
+
+} // namespace Tex3DS

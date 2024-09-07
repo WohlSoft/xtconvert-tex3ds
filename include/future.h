@@ -24,6 +24,9 @@
 
 #include <memory>
 
+namespace Tex3DS
+{
+
 namespace future
 {
 #if __cplusplus < 201402L
@@ -35,4 +38,6 @@ inline std::unique_ptr<T> make_unique (Args &&... args)
 #else
 using std::make_unique;
 #endif
+}
+
 }
